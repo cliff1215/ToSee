@@ -1,16 +1,15 @@
-export function base64FromUint8Array(bytes) {
-    let base64    = '';
-    let encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+export default function base64FromUint8Array(bytes) {
+    let base64 = '';
+    const encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
-    let byteLength    = bytes.byteLength;
-    let byteRemainder = byteLength % 3;
-    let mainLength    = byteLength - byteRemainder;
+    const byteLength = bytes.byteLength;
+    const byteRemainder = byteLength % 3;
+    const mainLength = byteLength - byteRemainder;
 
-    let a, b, c, d;
-    let chunk;
+    let a, b, c, d, chunk;
 
     // Main loop deals with bytes in chunks of 3
-    for (let i = 0; i < mainLength; i = i + 3) {
+    for (let i = 0; i < mainLength; i += 3) {
         // Combine the three bytes into a single integer
         chunk = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2];
 
@@ -25,7 +24,7 @@ export function base64FromUint8Array(bytes) {
     }
 
     // Deal with the remaining bytes and padding
-    if (byteRemainder == 1) {
+    if (byteRemainder === 1) {
         chunk = bytes[mainLength];
 
         a = (chunk & 252) >> 2; // 252 = (2^6 - 1) << 2
@@ -34,7 +33,7 @@ export function base64FromUint8Array(bytes) {
         b = (chunk & 3)   << 4; // 3   = 2^2 - 1
 
         base64 += encodings[a] + encodings[b] + '==';
-    } else if (byteRemainder == 2) {
+    } else if (byteRemainder === 2) {
         chunk = (bytes[mainLength] << 8) | bytes[mainLength + 1];
 
         a = (chunk & 64512) >> 10; // 64512 = (2^6 - 1) << 10
