@@ -1,8 +1,12 @@
+/**
+ * @param  {Uint8Array} bytes
+ * @returns {string} - return base64 string
+ */
 export default function base64FromUint8Array(bytes) {
     let base64 = '';
     const encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
-    const byteLength = bytes.byteLength;
+    const { byteLength } = bytes;
     const byteRemainder = byteLength % 3;
     const mainLength = byteLength - byteRemainder;
 
@@ -17,7 +21,7 @@ export default function base64FromUint8Array(bytes) {
         a = (chunk & 16515072) >> 18; // 16515072 = (2^6 - 1) << 18
         b = (chunk & 258048)   >> 12; // 258048   = (2^6 - 1) << 12
         c = (chunk & 4032)     >>  6; // 4032     = (2^6 - 1) << 6
-        d = chunk & 63;               // 63       = 2^6 - 1
+        d =  chunk & 63;              // 63       = 2^6 - 1
 
         // Convert the raw binary segments to the appropriate ASCII encoding
         base64 += encodings[a] + encodings[b] + encodings[c] + encodings[d];

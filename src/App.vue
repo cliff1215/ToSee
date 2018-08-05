@@ -1,7 +1,7 @@
 <script>
-import base64FromUint8Array from './libraries/lib.js';
-import imageType from 'image-type';
 import JSZip from 'jszip';
+import imageType from 'image-type';
+import base64FromUint8Array from './libraries/lib';
 import TickList from './components/TickList.vue';
 
 export default {
@@ -9,42 +9,53 @@ export default {
     components: {
         'entry-list': TickList,
     },
-    data () {
+    data() {
         return {
             zipObject: null,
             zipEntries: [],
             imgSource: '',
             currentIndex: -1,
-        }
+        };
     },
     methods: {
         initData() {
-            this.imgSource = ''; 
+            this.imgSource = '';
             this.currentIndex = -1;
             this.zipObject = null;
             this.zipEntries = [];
         },
+        /**
+         * @param {string} itemName - zip entry name in a zip file
+         * @returns {boolean} - return true if itemName is a folder
+         *                      or contains '__MACOSX' or is a hidden file
+         */
         isExcludedItem(itemName) {
             return itemName[itemName.length - 1] === '/'
-                || itemName.includes('__MACOSX') 
-                || itemName.includes('/.'); 
+                || itemName.includes('__MACOSX')
+                || itemName.includes('/.');
         },
+        /**
+         * @param {string} itemName - zip entry name in a zip file
+         * @returns {boolean} - return true if itemName's file extension
+         *                      contains '.png', '.jpg', and '.gif'
+         */
         isImageType(itemName) {
             const exts = ['.png', '.jpg', '.gif'];
 
-            itemName = itemName.toLowerCase();
-            for (let ext of exts) {
-                if (itemName.includes(ext)) return true;
+            const lowcaseName = itemName.toLowerCase();
+            let ext = '';
+            for (ext of exts) {
+                if (lowcaseName.includes(ext)) return true;
             }
             return false;
         },
         loadZipFile(evt) {
             this.initData();
 
-            let file = evt.target.files[0];
-            JSZip.loadAsync(file, {createFolders: false}).then((zip) => {
+            const file = evt.target.files[0];
+            JSZip.loadAsync(file).then((zip) => {
                 zip.forEach((relativePath, zipEntry) => {
-                    if (!this.isExcludedItem(zipEntry.name) 
+                    if (!this.isExcludedItem(zipEntry.name)
                         && this.isImageType(zipEntry.name)) {
                         this.zipEntries.push(zipEntry.name);
                     }
@@ -54,61 +65,62 @@ export default {
                     this.currentIndex = 0;
                     this.showImage();
                 }
-            })
+            });
         },
         showImage() {
             if (this.zipObject === null
-                || this.currentIndex < 0 
+                || this.currentIndex < 0
                 || this.currentIndex >= this.zipEntries.length) return;
 
             this.zipObject
                 .file(this.zipEntries[this.currentIndex])
                 .async('uint8array')
                 .then((data) => {
-                    let imgInfo = imageType(data);
-                    console.log(imgInfo)
+                    const imgInfo = imageType(data);
                     if (imgInfo === null) return;
-                    //this.imgSource = "data:image/jpg;base64," 
-                    this.imgSource = "data:" + imgInfo.mime + ";base64," 
-                        + base64FromUint8Array(data);
-                })
+                    // this.imgSource = "data:image/jpg;base64,"
+                    this.imgSource = `data:${imgInfo.mime};base64,${base64FromUint8Array(data)}`;
+                });
         },
         showPrevNextImage(delta) {
-            let temp = this.currentIndex + delta;
+            const temp = this.currentIndex + delta;
             if (temp < 0 || temp >= this.zipEntries.length) return;
 
             this.currentIndex = temp;
             this.showImage();
-        }
-    }
-}
+        },
+    },
+};
 </script>
 
 <template>
     <div id="app">
         <h3>Choose the local(s) zip file(s)</h3>
-        <input 
-            type="file" 
-            id="file" 
-            name="file" 
-            v-on:change="loadZipFile" 
-        />
-        <hr />
-        <button 
-            v-on:click="showPrevNextImage(-1)"
+        <input
+            id="file"
+            type="file"
+            name="file"
+            @change="loadZipFile"
+        >
+        <hr>
+        <button
+            @click="showPrevNextImage(-1)"
         >
             prev Image
         </button>
-        <button 
-            v-on:click="showPrevNextImage(+1)"
+        <button
+            @click="showPrevNextImage(+1)"
         >
             next image
         </button>
-        <hr />
+        <hr>
         <div class="content">
-            <entry-list v-bind:items="zipEntries"></entry-list>
+            <entry-list
+                :items="zipEntries"
+                :sel-index="currentIndex"
+            />
             <div class="img-container">
-                <img v-bind:src="imgSource" />
+                <img :src="imgSource">
             </div>
         </div>
     </div>
@@ -126,7 +138,7 @@ export default {
 }
 .img-container > img {
     width: 100%;
-    height: 100%; 
+    height: 100%;
     object-fit: contain;
 }
 </style>
