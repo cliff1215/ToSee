@@ -11,47 +11,6 @@ export default {
             default: -1,
         },
     },
-    data() {
-        return {
-            oldSelIndex: -1,
-            itemStyles: [],
-        };
-    },
-    watch: {
-        items(newItems) {
-            console.log('===> watch:items');
-            const len = newItems.length;
-            // console.log(len);
-            this.itemStyles = [];
-            for (let i = 0; i < len; ++i) {
-                this.itemStyles.push({ color: 'black', fontStyle: 'normal' });
-            }
-        },
-        selIndex(newIndex) {
-            console.log('===> watch:selIndex');
-            const stylesLen = this.itemStyles.length;
-
-            if (this.oldSelIndex >= 0 && this.oldSelIndex < stylesLen) {
-                this.itemStyles[this.oldSelIndex].color = 'black';
-                this.itemStyles[this.oldSelIndex].fontStyle = 'normal';
-            }
-            if (newIndex >= 0 && newIndex < stylesLen) {
-                this.itemStyles[newIndex].color = 'red';
-                this.itemStyles[newIndex].fontStyle = 'italic';
-
-                this.oldSelIndex = newIndex;
-            }
-        },
-    },
-    mounted() {
-        console.log('@@@mounted');
-    },
-    beforeUpdate() {
-        console.log('@@@beforeUpdate');
-    },
-    updated() {
-        console.log('@@@updated');
-    },
 };
 </script>
 <template>
@@ -60,7 +19,7 @@ export default {
             <li
                 v-for="(item, index) in items"
                 :key="index"
-                :style="itemStyles[index]"
+                :class="{ 'active': selIndex === index }"
             >
                 {{ item }}
             </li>
@@ -76,8 +35,14 @@ export default {
     .tick-list > ul {
         list-style-type: none;
     }
+    .tick-list li.active {
+        color: red;
+        font-style: italic;
+    }
     .tick-list li:hover {
         background: #e3f4bb;
+        font-weight: bolder;
+        text-shadow: 1px 1px 1px gray;
         cursor: pointer;
     }
 </style>

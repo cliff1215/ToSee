@@ -1,7 +1,8 @@
 /**
  * @param  {Uint8Array} bytes
- * @returns {string} - return base64 string
+ * @return {string} - return base64 string
  */
+/* eslint-disable no-multi-spaces */
 export default function base64FromUint8Array(bytes) {
     let base64 = '';
     const encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -9,7 +10,7 @@ export default function base64FromUint8Array(bytes) {
     const { byteLength } = bytes;
     const byteRemainder = byteLength % 3;
     const mainLength = byteLength - byteRemainder;
-
+    // eslint-disable-next-line one-var, one-var-declaration-per-line
     let a, b, c, d, chunk;
 
     // Main loop deals with bytes in chunks of 3
@@ -36,7 +37,8 @@ export default function base64FromUint8Array(bytes) {
         // Set the 4 least significant bits to zero
         b = (chunk & 3)   << 4; // 3   = 2^2 - 1
 
-        base64 += encodings[a] + encodings[b] + '==';
+        // base64 += encodings[a] + encodings[b] + '==';
+        base64 += `${encodings[a]}${encodings[b]}==`;
     } else if (byteRemainder === 2) {
         chunk = (bytes[mainLength] << 8) | bytes[mainLength + 1];
 
@@ -46,7 +48,8 @@ export default function base64FromUint8Array(bytes) {
         // Set the 2 least significant bits to zero
         c = (chunk & 15)    <<  2; // 15    = 2^4 - 1
 
-        base64 += encodings[a] + encodings[b] + encodings[c] + '=';
+        base64 += `${encodings[a]}${encodings[b]}${encodings[c]}=`;
     }
     return base64;
 }
+/* eslint-enable */

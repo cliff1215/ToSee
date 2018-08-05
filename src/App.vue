@@ -5,6 +5,7 @@ import base64FromUint8Array from './libraries/lib';
 import TickList from './components/TickList.vue';
 
 export default {
+    // eslint-disable-next-line vue/name-property-casing
     name: 'app',
     components: {
         'entry-list': TickList,
@@ -26,7 +27,7 @@ export default {
         },
         /**
          * @param {string} itemName - zip entry name in a zip file
-         * @returns {boolean} - return true if itemName is a folder
+         * @return {boolean} - return true if itemName is a folder
          *                      or contains '__MACOSX' or is a hidden file
          */
         isExcludedItem(itemName) {
@@ -36,7 +37,7 @@ export default {
         },
         /**
          * @param {string} itemName - zip entry name in a zip file
-         * @returns {boolean} - return true if itemName's file extension
+         * @return {boolean} - return true if itemName's file extension
          *                      contains '.png', '.jpg', and '.gif'
          */
         isImageType(itemName) {
@@ -61,6 +62,7 @@ export default {
                     }
                 });
                 if (this.zipEntries.length > 0) {
+                    this.zipEntries.sort();
                     this.zipObject = zip;
                     this.currentIndex = 0;
                     this.showImage();
