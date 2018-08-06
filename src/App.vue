@@ -1,7 +1,7 @@
 <script>
 import JSZip from 'jszip';
 import imageType from 'image-type';
-import base64FromUint8Array from './libraries/lib';
+import { base64FromUint8Array, isValidIndex } from './libraries/lib';
 import TickList from './components/TickList.vue';
 
 export default {
@@ -91,6 +91,12 @@ export default {
             this.currentIndex = temp;
             this.showImage();
         },
+        onSelectListItem(selectedIndex) {
+            if (isValidIndex(this.zipEntries, selectedIndex)) {
+                this.currentIndex = selectedIndex;
+                this.showImage();
+            }
+        },
     },
 };
 </script>
@@ -120,6 +126,7 @@ export default {
             <entry-list
                 :items="zipEntries"
                 :sel-index="currentIndex"
+                @select-ticklist-item="onSelectListItem"
             />
             <div class="img-container">
                 <img :src="imgSource">

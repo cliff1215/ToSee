@@ -3,7 +3,7 @@
  * @return {string} - return base64 string
  */
 /* eslint-disable no-multi-spaces */
-export default function base64FromUint8Array(bytes) {
+export function base64FromUint8Array(bytes) {
     let base64 = '';
     const encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
@@ -53,3 +53,12 @@ export default function base64FromUint8Array(bytes) {
     return base64;
 }
 /* eslint-enable */
+
+/**
+ * @param {any[]} anyArray - any type of array, should not null
+ * @param {number} index - index number
+ * @return {boolean} - return true if index is between >= 0 && < array.length
+ */
+export function isValidIndex(anyArray, index) {
+    return index >= 0 && index < anyArray.length;
+}

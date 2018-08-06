@@ -11,6 +11,11 @@ export default {
             default: -1,
         },
     },
+    methods: {
+        clickListItem(index) {
+            this.$emit('select-ticklist-item', index);
+        },
+    },
 };
 </script>
 <template>
@@ -20,6 +25,7 @@ export default {
                 v-for="(item, index) in items"
                 :key="index"
                 :class="{ 'active': selIndex === index }"
+                @click="clickListItem(index)"
             >
                 {{ item }}
             </li>
