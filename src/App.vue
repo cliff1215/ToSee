@@ -14,9 +14,19 @@ export default {
         return {
             zipObject: null,
             zipEntries: [],
-            imgSource: '',
+            imgSource: './assets/Impossible-is-nothing-adidas.jpg',
             currentIndex: -1,
         };
+    },
+    mounted() {
+        this.$nextTick(function () {
+            window.addEventListener('resize', this.windowResized);
+            // initial resize
+            this.windowResized();
+        });
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.windowResized);
     },
     methods: {
         initData() {
@@ -68,6 +78,15 @@ export default {
                     this.showImage();
                 }
             });
+        },
+        windowResized() {
+            // const width = document.documentElement.clientWidth;
+            let height = document.documentElement.clientHeight - 200;
+            if (height < 300) height = 300;
+            console.log(`Height: ${height}`);
+
+            const elements = document.getElementsByClassName('content');
+            elements[0].style.gridTemplateRows = `${height}px`;
         },
         showImage() {
             if (this.zipObject === null
@@ -138,8 +157,9 @@ export default {
 <style>
 .content {
     display: grid;
-    grid-template-columns: 30% auto;
-    grid-auto-rows: minmax(300px, auto);
+    grid-template-columns: 20% auto;
+    grid-column-gap: 5px;
+    /* grid-auto-rows: minmax(300px, auto); */
 }
 .img-container {
     background: black;

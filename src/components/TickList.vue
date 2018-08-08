@@ -37,9 +37,11 @@ export default {
     .tick-list {
         font-family: 'Lato', sans-serif;
         line-height: 2;
+        overflow-y: auto;
     }
     .tick-list > ul {
         list-style-type: none;
+        word-wrap: break-word;
     }
     .tick-list li.active {
         color: red;
