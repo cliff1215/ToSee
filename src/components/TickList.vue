@@ -11,6 +11,19 @@ export default {
             default: -1,
         },
     },
+    mounted() {
+        // console.log(`mounted: ${this.selIndex}`);
+    },
+    beforeUpdate() {
+        // console.log(`beforeUpdate: ${this.selIndex}`);
+    },
+    updated() {
+        // console.log(`updated: ${this.selIndex}`);
+        const elmt = this.$el.querySelector('.active');
+        if (elmt) {
+            elmt.scrollIntoView({ block: 'center', inline: 'center' });
+        }
+    },
     methods: {
         clickListItem(index) {
             this.$emit('select-ticklist-item', index);
@@ -24,7 +37,7 @@ export default {
             <li
                 v-for="(item, index) in items"
                 :key="index"
-                :class="{ 'active': selIndex === index }"
+                :class="{ 'active': index === selIndex }"
                 @click="clickListItem(index)"
             >
                 {{ item }}

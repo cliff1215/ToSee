@@ -14,7 +14,7 @@ export default {
         return {
             zipObject: null,
             zipEntries: [],
-            imgSource: './assets/Impossible-is-nothing-adidas.jpg',
+            imgSource: require('./assets/Impossible-is-nothing-adidas.jpg'),
             currentIndex: -1,
         };
     },
@@ -83,10 +83,13 @@ export default {
             // const width = document.documentElement.clientWidth;
             let height = document.documentElement.clientHeight - 200;
             if (height < 300) height = 300;
-            console.log(`Height: ${height}`);
+            // console.log(`Height: ${height}`);
 
-            const elements = document.getElementsByClassName('content');
-            elements[0].style.gridTemplateRows = `${height}px`;
+            // const elements = document.getElementsByClassName('content');
+            const elmt = this.$el.querySelector('.content');
+            // console.log(elmt);
+            elmt.style.gridTemplateRows = `${height}px`;
+            // elements[0].style.gridTemplateRows = `${height}px`;
         },
         showImage() {
             if (this.zipObject === null
@@ -103,6 +106,10 @@ export default {
                     this.imgSource = `data:${imgInfo.mime};base64,${base64FromUint8Array(data)}`;
                 });
         },
+        /**
+         * Showing the next or previous image
+         * @param {number} delta - +1 or -1 means next or prev
+         */
         showPrevNextImage(delta) {
             const temp = this.currentIndex + delta;
             if (temp < 0 || temp >= this.zipEntries.length) return;
@@ -110,11 +117,19 @@ export default {
             this.currentIndex = temp;
             this.showImage();
         },
+        /**
+         * Event handler for the list item selected by user
+         * @param {number} selectedIndex - the list item index selected by user
+         */
         onSelectListItem(selectedIndex) {
             if (isValidIndex(this.zipEntries, selectedIndex)) {
                 this.currentIndex = selectedIndex;
                 this.showImage();
             }
+        },
+        onWheelHandler(evt) {
+            // console.log(evt.deltaY);
+            this.showPrevNextImage(evt.deltaY > 0 ? 1 : -1);
         },
     },
 };
@@ -148,7 +163,9 @@ export default {
                 @select-ticklist-item="onSelectListItem"
             />
             <div class="img-container">
-                <img :src="imgSource">
+                <img
+                    :src="imgSource"
+                    @wheel="onWheelHandler" >
             </div>
         </div>
     </div>

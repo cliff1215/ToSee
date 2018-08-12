@@ -14,5 +14,7 @@ module.exports = {
         "no-bitwise": 0,
         "no-restricted-syntax": 0,
         "no-plusplus": 0,
+        "no-new": 0,
+        "global-require": 0,
     }
 }
